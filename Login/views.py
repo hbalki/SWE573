@@ -53,3 +53,6 @@ def logout_request(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect("/posts/index")
+
+def profile_request(request):
+    return render(request=request, template_name="login/views/profile.html", context={})
