@@ -16,10 +16,12 @@ Including another URLconf
 from http.client import HTTPResponse
 from django.contrib import admin
 from django.urls import path, include
+from blog.views import Create_Blog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include('posts.urls')),
-    path('users/', include('Login.urls'))
+    path('users/', include('Login.urls')),
+    path('blog/', include('blog.urls'))
 ]
 
