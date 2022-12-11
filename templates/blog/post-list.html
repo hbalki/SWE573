@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Post List
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <div style="margin: 0 auto; width: 500px;">
+        {% static 'base.css' %}
+        <h1>Post List</h1>
+        {% for post in posts %}
+            <h3>{{post.title}}</h3>
+            <h5>{{post.content}} - {{post.created_date}}</h5>
+        {% empty %}
+            <p>No value</p>
+        {% endfor %}
+    </div>
+{% endblock %}
+

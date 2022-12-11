@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-path('index', views.profile, name='profile'),
+    path('my-profile', views.my_profile_request, name='show_me'),
+    path('my-friends', views.friends_request, name='friends'),
 ]
-
