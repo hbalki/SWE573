@@ -1,13 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Post Creation</h1>
-<p>
-{{context2}}
-</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+	<form action="#" method="post">
+		{% for field in form %}
+			<div class="form-group">
+				<div class="row">
+					<div class="col-lg-6">
+						<label class="control-label"> {{ field.label }}</label>
+						{{ field }}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		<div class="form-group">
+			<div class="row">
+				<div class="col-sm-offset-2 col-lg-6">
+					<input type="submit" value="Save" class="btn btn-sm btn-success">
+				</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}

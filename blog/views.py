@@ -1,15 +1,13 @@
-from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import login, authenticate, logout
-from django.contrib import messages
-from pprint import pprint
+from django.shortcuts import render
+
+from .forms import Contact_Form, Blog_Form
 # HTTPresponse
 # Create your views here.
-from django.contrib.auth.forms import AuthenticationForm
 from .models import Blog
-from .forms import Contact_Form
-
 
 info = []
+
+
 def contact(request):
     form = Contact_Form(data=request.GET or None)
     if form.is_valid():
@@ -17,10 +15,12 @@ def contact(request):
         surname = form.cleaned_data.get('surname')
         email = form.cleaned_data.get('email')
         content = form.cleaned_data.get('content')
-        data={'name': name,'surname': surname,'email': email,'content': content}
+        data = {'name': name, 'surname': surname, 'email': email, 'content': content}
         info.append(data)
         return render(request, 'contact.html', context={'info': info, 'form': form})
-    return render(request, 'contact.html', context={'form':form})
+    return render(request, 'contact.html', context={'form': form})
+
+
 def list_posts(request):
     print(request.GET)
     var1 = request.GET.get('id', None)
@@ -32,8 +32,8 @@ def list_posts(request):
 
 
 def create_posts(request):
-    var2 = "Gönderiler burada oluşturulacak"
-    return render(request, "blog/post-create.html", context={'context2': var2})
+    form = Blog_Form()
+    return render(request, 'blog/post-create.html', context={'form': form})
 
 
 def delete_posts(request):

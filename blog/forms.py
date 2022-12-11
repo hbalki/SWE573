@@ -1,10 +1,8 @@
 from django import forms
-
+from .models import Blog
 
 
 banned_email_list = ['isilbalki@gmail.com']
-
-
 class Contact_Form(forms.Form):
     name = forms.CharField(max_length=50, label='Name', required=False)
     surname = forms.CharField(max_length=50, label='Surname', required=False)
@@ -15,7 +13,8 @@ class Contact_Form(forms.Form):
     def __int__(self, *args, **kwargs):
         super(Contact_Form, self).__int__(*args, **kwargs)
         for field in self.fields:
-            self.fields[field].widget.attrs = {'class': 'form-control'}
+            self.fields['field'].widget.attrs = {'class': 'form-control'}
+        self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -36,3 +35,14 @@ class Contact_Form(forms.Form):
 
         if email != email2:
             raise forms.ValidationError("Emails don't match")
+
+class Blog_Form(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'content']
+
+        def __int__(self,*args, **kwargs):
+            super(Blog_Form, self).__int__(*args, **kwargs)
+            for field in self.fields:
+                self.fields[field].widget.attrs = {'class': 'form-control'}
+
