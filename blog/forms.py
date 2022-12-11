@@ -13,8 +13,8 @@ class Contact_Form(forms.Form):
     def __int__(self, *args, **kwargs):
         super(Contact_Form, self).__int__(*args, **kwargs)
         for field in self.fields:
-            self.fields['field'].widget.attrs = {'class': 'form-control'}
-        self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
+            self.fields[field].widget.attrs = {'class': 'form-control'}
+        self.fields[content].widget = forms.Textarea(attrs={'class': 'form-control'})
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
