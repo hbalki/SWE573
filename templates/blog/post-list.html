@@ -5,17 +5,28 @@
     Post List
 {% endblock %}
 
+{% block top_content %}
+
+{% endblock %}
+
+
 {% block content %}
-    {{ block.super }}
-    <div style="margin: 0 auto; width: 500px;">
-        {% static 'base.css' %}
-        <h1>Post List</h1>
-        {% for post in posts %}
-            <h3>{{post.title}}</h3>
-            <h5>{{post.content}} - {{post.created_date}}</h5>
-        {% empty %}
-            <p>No value</p>
-        {% endfor %}
-    </div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="col-lg-8 col-lg-offset-2">
+				<h1 class="page-header"><span>POST LIST</span>
+					<small class="pull-right"><a href="{% url 'create' %}">Post Create</a></small>
+				</h1>
+			        {% for post in posts %}
+				        <h2><a href="{{ post.get_absolute_url }}"><span> {{ post.title }}</span></a><small>, {{ post.created_date }}</small></h2>
+{#				        <small> {% url 'detail' post.pk %}</small>#}
+				        <small> {{ post.get_absolute_url }}</small>
+			            <p>{{ post.content }}</p>
+			        {% empty %}
+			            <p>No value</p>
+			        {% endfor %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
 

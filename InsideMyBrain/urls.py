@@ -19,13 +19,21 @@ from django.contrib import admin
 from django.urls import include, path
 
 from blog.views import contact
+from preview.views import index, generate_preview
+from login.views import login_request, register_request, logout_request
+
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('users/', include('login.urls'), name='users'),
     path('posts/', include('blog.urls'), name='posts'),
     path('profile/', include('profile.urls'), name='profile'),
-    path('contact/', contact, name='contact')
+    path('contact/', contact, name='contact'),
+    path('preview/', generate_preview, name='preview'),
+    path('login', login_request, name='login'),
+    path('register', register_request, name='register'),
+    path('logout', logout_request, name='logout'),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
