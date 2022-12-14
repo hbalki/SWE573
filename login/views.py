@@ -2,10 +2,6 @@ from django.shortcuts import render, redirect
 from .forms import NewUserForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from pprint import pprint
-# HTTPresponse
-from django.http import HttpResponse
-# Create your views here.
 from django.contrib.auth.forms import AuthenticationForm
 
 
@@ -45,6 +41,7 @@ def register_request(request):
             request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
     return render(request, "login/register.html")
+
 
 def logout_request(request):
     if not request.user.is_authenticated:
