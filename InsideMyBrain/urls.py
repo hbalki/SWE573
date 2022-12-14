@@ -28,7 +28,6 @@ urlpatterns = [
     path('contact/', contact, name='contact'),
     path('login/', include('login.urls'), name='login')
 
-
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

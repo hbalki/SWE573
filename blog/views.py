@@ -81,30 +81,6 @@ def index(request):
     return render(request, 'blog/index.html')
 
 
-def generate_preview(request):
-    headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Max-Age': '3600',
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
-    }
-
-    url = request.GET.get('link')
-    print(url)
-    req = requests.get(url, headers)
-    html = BeautifulSoup(req.content, 'html.parser')
-    meta_data = {
-        'title': get_title(html),
-        'description': get_description(html),
-        'image': get_image(html),
-    }
-
-    print(meta_data)
-
-    return JsonResponse(meta_data)
-
-
 def get_title(html):
     """Scrape page title."""
     title = None
@@ -147,3 +123,27 @@ def get_image(html):
     elif html.find("img", src=True):
         image = html.find_all("img").get('src')
     return image
+
+
+def generate_preview(request):
+    headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Max-Age': '3600',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
+    }
+
+    url = request.GET.get('link')
+    print(url)
+    req = requests.get(url, headers)
+    html = BeautifulSoup(req.content, 'html.parser')
+    meta_data = {
+        'title': get_title(html),
+        'description': get_description(html),
+        'image': get_image(html),
+    }
+
+    print(meta_data)
+
+    return JsonResponse(meta_data)
