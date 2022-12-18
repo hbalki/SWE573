@@ -17,16 +17,27 @@
 				<h2 class="page-header"><a href="{% url 'list' %}"><span class="glyphicon glyphicon-circle-arrow-left"></span> </a><a href="#"> {{ blog.title|upper }}</a>
 					<small class="pull-right"><span class="glyphicon glyphicon-time"></span> {{ blog.created_date }} </small>
 				</h2>
+
+				{% if blog.get_image %}
+					<div class="row">
+						<div class="col-lg-12">
+							<img class="img-responsive" src="{{ blog.get_image }}">
+						</div>
+					</div>
+				{% endif %}
+
 				<div class="row">
-					<div class="col-lg-3 pull-right">
+					<br>
+					<p class="lead">{{ blog.content|linebreaks }}</p>
+				</div>
+
+				<div class="row">
+					<br>
+					<div class="col-lg-3">
 						<a class="btn btn-primary btn-sm" href="{% url 'edit' blog.pk %}">Update</a>
 						<a class="btm btn-danger btn-sm" href="{% url 'delete' blog.pk %}">Delete</a>
 					</div>
 				</div>
-
-				<p class="lead">
-					{{ blog.content|linebreaks }}
-				</p>
 
 			</div>
 		</div>

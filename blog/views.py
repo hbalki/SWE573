@@ -48,7 +48,7 @@ def detail_posts(request, pk):
 def create_posts(request):
     form = Blog_Form()
     if request.method == 'POST':
-        form = Blog_Form(request.POST)
+        form = Blog_Form(request.POST, files=request.FILES)
         if form.is_valid():
             blog = form.save()
             # url = reverse('detail', kwargs={'pk': blog.pk})
@@ -64,7 +64,7 @@ def delete_posts(request, pk):
 
 def edit_posts(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
-    form = Blog_Form(instance=blog, data=request.POST or None)
+    form = Blog_Form(instance=blog, data=request.POST or None, files=request.FILES or None)
     if form.is_valid():
         form.save()
         return HttpResponseRedirect(blog.get_absolute_url())
@@ -79,50 +79,6 @@ def save_posts(request):
 
 def index(request):
     return render(request, 'blog/index.html')
-
-
-def get_title(html):
-    """Scrape page title."""
-    title = None
-    if html.title.string:
-        title = html.title.string
-    elif html.find("meta", property="og:title"):
-        title = html.find("meta", property="og:title").get('content')
-    elif html.find("meta", property="twitter:title"):
-        title = html.find("meta", property="twitter:title").get('content')
-    elif html.find("h1"):
-        title = html.find("h1").string
-    return title
-
-
-def get_description(html):
-    """Scrape page description."""
-    description = None
-    if html.find("meta", property="description"):
-        description = html.find("meta", property="description").get('content')
-    elif html.find("meta", property="og:description"):
-        description = html.find(
-            "meta", property="og:description").get('content')
-    elif html.find("meta", property="twitter:description"):
-        description = html.find(
-            "meta", property="twitter:description").get('content')
-    elif html.find("p"):
-        description = html.find("p").contents
-    return description
-
-
-def get_image(html):
-    """Scrape share image."""
-    image = None
-    if html.find("meta", property="image"):
-        image = html.find("meta", property="image").get('content')
-    elif html.find("meta", property="og:image"):
-        image = html.find("meta", property="og:image").get('content')
-    elif html.find("meta", property="twitter:image"):
-        image = html.find("meta", property="twitter:image").get('content')
-    elif html.find("img", src=True):
-        image = html.find_all("img").get('src')
-    return image
 
 
 def generate_preview(request):
@@ -147,3 +103,49 @@ def generate_preview(request):
     print(meta_data)
 
     return JsonResponse(meta_data)
+
+
+def get_title(html):
+    """Scrape page title."""
+    title = "title"
+    if html.title.string:
+        title = html.title.string
+    elif html.find("meta", property="og:title"):
+        title = html.find("meta", property="og:title").get('content')
+    elif html.find("meta", property="twitter:title"):
+        title = html.find("meta", property="twitter:title").get('content')
+    elif html.find("h1"):
+        title = html.find("h1").string
+    return title
+
+
+def get_description(html):
+    """Scrape page description."""
+    description = "description"
+    if html.find("meta", property="description"):
+        description = html.find("meta", property="description").get('content')
+    elif html.find("meta", property="og:description"):
+        description = html.find(
+            "meta", property="og:description").get('content')
+    elif html.find("meta", property="twitter:description"):
+        description = html.find(
+            "meta", property="twitter:description").get('content')
+    elif html.find("p"):
+        description = html.find("p").contents
+    return description
+
+
+def get_image(html):
+    """Scrape share image."""
+    image = "image"
+    if html.find("meta", property="image"):
+        image = html.find("meta", property="image").get('content')
+    elif html.find("meta", property="og:image"):
+        image = html.find("meta", property="og:image").get('content')
+    elif html.find("meta", property="twitter:image"):
+        image = html.find("meta", property="twitter:image").get('content')
+    elif html.find("img", src=True):
+        image = html.find_all("img").get('src')
+    return image
+
+
