@@ -40,6 +40,8 @@ class Contact_Form(forms.Form):
             raise forms.ValidationError("Emails don't match")
 
 
+
+
 class Blog_Form(forms.ModelForm):
     class Meta:
         model = Blog
@@ -50,7 +52,6 @@ class Blog_Form(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs = {'class': 'form-control'}
         self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
-
 
 
 

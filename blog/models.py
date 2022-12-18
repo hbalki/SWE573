@@ -1,9 +1,10 @@
 from django.db import models
 from django.shortcuts import reverse
+from django.template.defaultfilters import slugify, safe
 
 class Blog(models.Model):
     objects = None
-    CATEGORY_CHOICES = (('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS') ('photography', 'PHOTOGRAPHY'), ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
+    CATEGORY_CHOICES = (('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'), ('photography', 'PHOTOGRAPHY'), ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
     title = models.CharField(max_length=100, blank=False, null=True, verbose_name='Başlık Giriniz', help_text='Başlık '
 
                                                                                                             'Bilgisi Burada Girilir.')
@@ -32,6 +33,23 @@ class Blog(models.Model):
 
         else:
             return '/media/default/default_img.jpg'
+
+    def get_color_html(self):
+        if self.category_choices == 'art':
+            return '<small style="color: white; background-color: red">ART</small>'
+        elif self.category_choices == 'science':
+            return '<small style="color: white; background-color: blue">SCIENCE</small>'
+        elif self.category_choices == 'sports':
+            return '<small style="color: white; background-color: green">SPORTS</small>'
+        elif self.category_choices == 'photography':
+            return '<small style="color: black; background-color: yellow">PHOTOGRAPHY</small>'
+        elif self.category_choices == 'technology':
+            return '<small style="color: white; background-color: purple">TECHNOLOGY</small>'
+        elif self.category_choices == 'travel':
+            return '<small style="color: black; background-color: orange">TRAVEL</small>'
+        else:
+            return '<small style="color: white; background-color: darkblue">OTHER</small>'
+
 
 
 class Contact(models.Model):
