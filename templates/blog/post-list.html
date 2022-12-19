@@ -14,24 +14,37 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="col-lg-8 col-lg-offset-2">
-				<h1 class="page-header"><span>POST LIST</span>
-					<small class="pull-right"><a href="{% url 'create' %}">Post Create</a></small>
-				</h1>
-			        {% for post in posts %}
-				        <h2><a href="{{ post.get_absolute_url }}"><span> {{ post.title }}</span></a>
+				<div class="row">
+					<div class="col-lg-12">
+						<form class="form-inline" action="{% url 'list' %}">
+							{% for field in form %}
+								<div class="form-group">
+									{{ field }}
+									{% for error in field.errors %}
+										<span class="text-danger"><b>{{ error }}</b></span>
+									{% endfor %}
+								</div>
+							{% endfor %}
+							<input class="btn btn-success" value="Filter" type="submit">
+						</form>
+					</div>
+				</div>
+		        {% for post in posts %}
+			        <h2><a href="{{ post.get_absolute_url }}"><span> {{ post.title }}</span></a>
+						<small>{{ post.get_category_choices_html }}</small>
+				        <small style="font-size: small"><span class="glyphicon glyphicon-time"></span>{{ post.created_date }}</small>
 
-					        <small style="font-size: small">{{ post.get_category_choices_html }}<span class="glyphicon glyphicon-time"></span> {{ post.created_date }}</small>
+			        </h2>
+			        {% if post.get_image %}
+			            <img class="img-responsive" src="{{ post.get_image }}">
+				        <br>
+			        {% endif %}
 
-				        </h2>
-				        {% if post.get_image %}
-				            <img class="img-responsive" src="{{ post.get_image }}">
-					        <br>
-				        {% endif %}
-
-				        <p style="font-size: large; margin-top: 20px;">{{ post.content|linebreaks|truncatewords:20 }}</p>
-			        {% empty %}
-			            <p>No Blog</p>
-			        {% endfor %}
+			        <p style="font-size: large; margin-top: 20px;">{{ post.content|linebreaks|truncatewords:20 }}</p>
+			        <p style="font-size: large; margin-top: 20px;">{{ post.link}}</p>
+		        {% empty %}
+		            <p>No Blog</p>
+		        {% endfor %}
 			</div>
 		</div>
 	</div>

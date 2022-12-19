@@ -12,7 +12,7 @@ urlpatterns = [
     path('delete-posts/<int:pk>/', views.delete_posts, name='delete'),
     path('edit-posts/<int:pk>/', views.edit_posts, name='edit'),
     path('save-posts/', views.save_posts, name='save'),
-    path('preview/', generate_preview, name='generate'),
-    path('', index, name='preview'),
+    path('generate/', generate_preview, name='generate'),
+    path('preview/', index, name='preview'),
 
 ]

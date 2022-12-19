@@ -1,11 +1,13 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, reverse
-
-from .forms import Contact_Form, Blog_Form
+from .forms import Contact_Form, Blog_Form, PostQuery_Form
 from .models import Blog
-from django.shortcuts import render
 import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
 
 info = []
 
@@ -29,13 +31,22 @@ def contact(request):
 
 
 def list_posts(request):
-    # print(reverse('create'))
-    print(request.GET)
-    var1 = request.GET.get('id', None)
     posts = Blog.objects.all()
-    if var1:
-        posts = posts.filter(id=var1)
-    context = {'posts': posts}
+    print(posts)
+    page = request.GET.get('page', 1)
+    form = PostQuery_Form(data=request.GET or None)
+    if form.is_valid():
+        search_category = form.cleaned_data.get('search_category', None)
+        search = form.cleaned_data.get('search', None)
+        if search:
+            posts = posts.filter(Q(content__icontains=search) | Q(title__icontains=search)).distinct()
+        if search_category and search_category != 'all':
+            posts = posts.filter(category_choices__icontains=search_category)
+            print(posts, 'selam')
+
+    paginator = Paginator(posts, 2)
+    posts = paginator.page(page)
+    context = {'posts': posts, 'form': form}
     return render(request, 'blog/post-list.html', context)
 
 

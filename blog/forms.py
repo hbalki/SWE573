@@ -54,8 +54,12 @@ class Blog_Form(forms.ModelForm):
         self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
 
 
-
-
+class PostQuery_Form(forms.Form):
+    CATEGORY_CHOICES = ((None, 'Please Select a Category'), ('all','ALL'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'), ('photography', 'PHOTOGRAPHY'),
+                        ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
+    search = forms.CharField(label='Search', max_length=500, widget=forms.TextInput(attrs={'placeholder':'Search for anything', 'class': 'form-control'}),
+                             required=False)
+    search_category = forms.ChoiceField(label='', widget=forms.Select(attrs={'class': 'form-control'}), choices=CATEGORY_CHOICES, required=False)
 
 
 
