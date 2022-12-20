@@ -71,5 +71,5 @@ class Comment_Form(forms.ModelForm):
         super(Comment_Form, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {'class': 'form-control'}
-        self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
+
 

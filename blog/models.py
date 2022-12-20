@@ -85,26 +85,27 @@ class Contact(models.Model):
     # def get_absolute_url(self):
     #     return reverse('detail', kwargs={'pk': self.pk})
 
-def get_blog_comment(self):
-    return self.comment_set.all()
+
 
 class Comment(models.Model):
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='comment')
+    blog = models.ForeignKey(Blog, null=True, related_name='comments', on_delete=models.CASCADE)
     name = models.CharField(max_length=80)
     surname = models.CharField(max_length=80)
     email = models.EmailField()
-    content = models.TextField(help_text='Yorumunuzu buraya giriniz')
+    content = models.TextField(max_length=1000, help_text='Yorumunuzu buraya giriniz')
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
+
 
     class Meta:
         verbose_name_plural = 'Comments'
         ordering = ['created_on']
 
     def __str__(self):
-        return 'Comment {} by {}'.format(self.body, self.name, self.surname)
+        return '%s %s' % (self.email, self.blog)
 
-    def get_screen_name(self):
-        if self.isim and self.soyisim:
-            return '{} {}'.format(self.isim, self.soyisim)
-        return self.email
+    # def get_screen_name(self):
+    #     if self.isim and self.soyisim:
+    #         return '{} {}'.format(self.isim, self.soyisim)
+    #     return self.email
+

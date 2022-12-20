@@ -53,12 +53,12 @@ def detail_posts(request, pk):
     # blog = Blog.objects.get(pk=pk)
     return render(request, 'blog/post-detail.html', context={'blog': blog})
 
-def add_comment(request, comment=None):
-    form = Comment_Form()
+
+def add_comment(request):
     if request.method == 'GET':
         return HttpResponseBadRequest()
     blog = get_object_or_404(Blog, pk=request.POST.get('blog_id'))
-    form = Comment_Form(request.POST)
+    form = Comment_Form(data=request.POST)
     if form.is_valid():
         new_comment = form.save(commit=False)
         new_comment.blog = blog
