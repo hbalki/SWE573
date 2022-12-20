@@ -5,7 +5,7 @@ from django.forms.models import ModelForm
 
 
 
-banned_email_list = ['isilbalki@gmail.com']
+banned_email_list = []
 
 class Contact_Form(forms.Form):
     name = forms.CharField(max_length=50, label='Name', required=False)

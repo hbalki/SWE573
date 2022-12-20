@@ -26,13 +26,13 @@ class Contact(models.Model):
         return reverse('detail', kwargs={'pk': self.pk})
 
 
-class Tag(models.Model):
-    name = models.CharField(max_length=10, blank=False, null=True, verbose_name='Tag Name', help_text= 'Tag Name')
-    class Meta:
-        verbose_name = 'Tag'
-
-    def __str__(self):
-        return self.name
+# class Tag(models.Model):
+#     name = models.CharField(max_length=10, verbose_name='Tag')
+#     class Meta:
+#         verbose_name_plural = 'Tags'
+#
+#     def __str__(self):
+#         return self.name
 
 
 class Blog(models.Model):
@@ -43,6 +43,7 @@ class Blog(models.Model):
     category_choices = models.CharField(max_length=20, choices=CATEGORY_CHOICES, null= True, blank= False, verbose_name='Kategori Seçiniz', help_text='Kategori ')
     link = models.URLField(max_length=1000, blank=True, null=True, verbose_name='Bağlantı adresini giriniz')
     content = models.CharField(max_length=1000, blank=False, null=True, verbose_name='İçerik Giriniz')
+    # tags = models.ManyToManyField(to=Tag, null=True)
     image = models.ImageField(default='default/default_img.jpg', blank=True, null=True, verbose_name='Resim Yükleyiniz')
     created_date = models.DateField(auto_now_add=True, auto_now=False)
 
