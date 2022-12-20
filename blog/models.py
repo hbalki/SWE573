@@ -5,6 +5,36 @@ import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
 
+
+class Contact(models.Model):
+    objects = None
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name='İsim Giriniz', help_text= 'İsim Bilgisi Burada Girilir.')
+    surname = models.CharField(max_length=50, blank=False, null=True, verbose_name='Soyisim Giriniz', help_text= 'Soyisim Bilgisi Burada Girilir.')
+    email = models.EmailField(max_length=50, blank=False, null=True, verbose_name='Email Giriniz')
+    email2 = models.EmailField(max_length=50, blank=False, null=True, verbose_name="Email'i tekrar giriniz")
+    content = models.TextField(max_length=50, blank=False, null=True, verbose_name="İçerik giriniz", help_text= "İçerik Bilgisi Burada Girilir.")
+
+
+
+    class Meta:
+        verbose_name = 'Registration'
+
+    def __str__(self):
+        return "%s" % self.title
+
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'pk': self.pk})
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=10, blank=False, null=True, verbose_name='Tag Name', help_text= 'Tag Name')
+    class Meta:
+        verbose_name = 'Tag'
+
+    def __str__(self):
+        return self.name
+
+
 class Blog(models.Model):
     CATEGORY_CHOICES = ((None, 'Please select an option'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'), ('photography', 'PHOTOGRAPHY'), ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
     title = models.CharField(max_length=100, blank=False, null=True, verbose_name='Başlık Giriniz', help_text='Başlık '
@@ -66,29 +96,12 @@ class Blog(models.Model):
             return safe('<span class="badge badge-pill badge-light">Please select an option</span>')
 
 
-class Contact(models.Model):
-    objects = None
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name='İsim Giriniz', help_text= 'İsim Bilgisi Burada Girilir.')
-    surname = models.CharField(max_length=50, blank=False, null=True, verbose_name='Soyisim Giriniz', help_text= 'Soyisim Bilgisi Burada Girilir.')
-    email = models.EmailField(max_length=50, blank=False, null=True, verbose_name='Email Giriniz')
-    email2 = models.EmailField(max_length=50, blank=False, null=True, verbose_name="Email'i tekrar giriniz")
-    content = models.TextField(max_length=50, blank=False, null=True, verbose_name="İçerik giriniz", help_text= "İçerik Bilgisi Burada Girilir.")
 
-
-
-    class Meta:
-        verbose_name = 'Registration'
-
-    def __str__(self):
-        return "%s" % self.title
-
-    # def get_absolute_url(self):
-    #     return reverse('detail', kwargs={'pk': self.pk})
-
-
+    def get_blog_comment(self):
+        return self.comment.all()
 
 class Comment(models.Model):
-    blog = models.ForeignKey(Blog, null=True, related_name='comments', on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog, null=True, related_name='comment', on_delete=models.CASCADE)
     name = models.CharField(max_length=80)
     surname = models.CharField(max_length=80)
     email = models.EmailField()
@@ -102,10 +115,11 @@ class Comment(models.Model):
         ordering = ['created_on']
 
     def __str__(self):
+        # return 'Comment {} by {}'.format(self.content, self.email)
         return '%s %s' % (self.email, self.blog)
 
-    # def get_screen_name(self):
-    #     if self.isim and self.soyisim:
-    #         return '{} {}'.format(self.isim, self.soyisim)
-    #     return self.email
+    def get_screen_name(self):
+        if self.name and self.surname:
+            return '{} {}'.format(self.name, self.surname)
+        return self.email
 

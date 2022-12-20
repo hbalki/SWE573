@@ -49,22 +49,24 @@ def list_posts(request):
 
 
 def detail_posts(request, pk):
+    form = Comment_Form()
     blog = get_object_or_404(Blog, pk=pk)
-    # blog = Blog.objects.get(pk=pk)
-    return render(request, 'blog/post-detail.html', context={'blog': blog})
+    return render(request, 'blog/post-detail.html', context={'blog': blog, 'form': form})
 
 
-def add_comment(request):
+def add_comment(request, pk):
     if request.method == 'GET':
         return HttpResponseBadRequest()
-    blog = get_object_or_404(Blog, pk=request.POST.get('blog_id'))
+    blog = get_object_or_404(Blog, pk=pk)
+    print(blog, "selam")
+    # print(request.POST)
     form = Comment_Form(data=request.POST)
     if form.is_valid():
         new_comment = form.save(commit=False)
         new_comment.blog = blog
         new_comment.save()
         messages.success(request, 'Yorumunuz başarıyla eklendi.')
-        return HttpResponseRedirect(blog.get_absolute_url())
+        return HttpResponseRedirect((blog.get_absolute_url()))
 
 
 def create_posts(request):

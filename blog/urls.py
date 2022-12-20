@@ -7,8 +7,8 @@ from .views import generate_preview, index
 
 urlpatterns = [
 
+    path('add-comment/<int:pk>/', views.add_comment, name='add_comment'),
     path('list-posts/', views.list_posts, name='list'),
-    path('add-comment/', views.add_comment, name='add_comment'),
     path('detail-posts/<int:pk>/', views.detail_posts, name='detail'),
     path('create-posts/', views.create_posts, name='create'),
     path('delete-posts/<int:pk>/', views.delete_posts, name='delete'),
