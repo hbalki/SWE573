@@ -1,11 +1,14 @@
+from django.core.checks import messages
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, reverse
-from .forms import Contact_Form, Blog_Form, PostQuery_Form
+from blog.forms import Contact_Form, Blog_Form, PostQuery_Form, Comment_Form
 from .models import Blog
 import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse
 from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, reverse
+from django.http import HttpResponseBadRequest
+
 
 
 
@@ -32,8 +35,6 @@ def contact(request):
 
 def list_posts(request):
     posts = Blog.objects.all()
-    print(posts)
-    page = request.GET.get('page', 1)
     form = PostQuery_Form(data=request.GET or None)
     if form.is_valid():
         search_category = form.cleaned_data.get('search_category', None)
@@ -42,10 +43,7 @@ def list_posts(request):
             posts = posts.filter(Q(content__icontains=search) | Q(title__icontains=search)).distinct()
         if search_category and search_category != 'all':
             posts = posts.filter(category_choices__icontains=search_category)
-            print(posts, 'selam')
 
-    paginator = Paginator(posts, 2)
-    posts = paginator.page(page)
     context = {'posts': posts, 'form': form}
     return render(request, 'blog/post-list.html', context)
 
@@ -54,6 +52,19 @@ def detail_posts(request, pk):
     blog = get_object_or_404(Blog, pk=pk)
     # blog = Blog.objects.get(pk=pk)
     return render(request, 'blog/post-detail.html', context={'blog': blog})
+
+def add_comment(request, comment=None):
+    form = Comment_Form()
+    if request.method == 'GET':
+        return HttpResponseBadRequest()
+    blog = get_object_or_404(Blog, pk=request.POST.get('blog_id'))
+    form = Comment_Form(request.POST)
+    if form.is_valid():
+        new_comment = form.save(commit=False)
+        new_comment.blog = blog
+        new_comment.save()
+        messages.success(request, 'Yorumunuz başarıyla eklendi.')
+        return HttpResponseRedirect(blog.get_absolute_url())
 
 
 def create_posts(request):

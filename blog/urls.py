@@ -14,5 +14,6 @@ urlpatterns = [
     path('save-posts/', views.save_posts, name='save'),
     path('generate/', generate_preview, name='generate'),
     path('preview/', index, name='preview'),
+    path('add-comment/', views.add_comment, name='add_comment'),
 
 ]

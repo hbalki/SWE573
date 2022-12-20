@@ -1,8 +1,8 @@
 from django import forms
-from .models import Blog
-from .models import Contact
+from .models import Blog, Contact, Comment
 from django.forms.forms import BaseForm
 from django.forms.models import ModelForm
+
 
 
 banned_email_list = ['isilbalki@gmail.com']
@@ -62,5 +62,14 @@ class PostQuery_Form(forms.Form):
     search_category = forms.ChoiceField(label='', widget=forms.Select(attrs={'class': 'form-control'}), choices=CATEGORY_CHOICES, required=False)
 
 
+class Comment_Form(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name', 'surname', 'email', 'content']
 
+    def __init__(self, *args, **kwargs):
+        super(Comment_Form, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs = {'class': 'form-control'}
+        self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
 
