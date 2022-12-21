@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'blog',
-    'profile'
+    'profile',
+    'taggit',
 
 ]
 
@@ -89,6 +90,9 @@ DATABASES = {
         'PORT': '3307',
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
+        'OPTIONS': {
+            'auth_plugin': 'mysql_native_password'
+        }
     }
 }
 
