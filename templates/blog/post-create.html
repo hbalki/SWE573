@@ -19,7 +19,7 @@
 			<form action="{% url 'create' %}"  enctype="multipart/form-data"  method="post">
 				{% csrf_token %}
 				{% include 'blog/include/form-include.html' %}
-				{% include 'blog/include/index.html' %}
+{#				{% include 'blog/include/index.html' %}#}
 				<div class="form-group">
 					<div class="row">
 						<div class="col-lg-6">

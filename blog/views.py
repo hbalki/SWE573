@@ -115,33 +115,35 @@ def save_posts(request):
     return render(request, "blog/post-save.html", context={'context5': var5})
 
 
-def home_view(request):
-    common_tags = Blog.tags.most_common()[:4]
-    form = Blog_Form(request.POST)
-    if form.is_valid():
-        newpost = form.save(commit=False)
-        newpost.save()
-        form.save_m2m()
-    context = {
-        'common_tags': common_tags,
-        'form': form,
-    }
-    return render(request, 'blog/home.html', context)
+# def home_view(request):
+#     common_tags = Blog.tags.most_common()[:4]
+#     form = Blog_Form(request.POST)
+#     if form.is_valid():
+#         newpost = form.save(commit=False)
+#         newpost.save()
+#         form.save_m2m()
+#     context = {
+#         'common_tags': common_tags,
+#         'form': form,
+#     }
+#     return render(request, 'blog/home.html', context)
 
 
-def tagged(request, slug):
-    tag = get_object_or_404(Tag, slug=slug)
-    common_tags = Blog.tags.most_common()[:4]
-    posts = Blog.objects.filter(tags=tag)
-    context = {
-        'tag': tag,
-        'common_tags': common_tags,
-        'posts': posts,
-    }
-    return render(request, 'blog/home.html', context)
+# def tagged(request, slug):
+#     tag = get_object_or_404(Tag, slug=slug)
+#     common_tags = Blog.tags.most_common()[:4]
+#     posts = Blog.objects.filter(tags=tag)
+#     context = {
+#         'tag': tag,
+#         'common_tags': common_tags,
+#         'posts': posts,
+#     }
+#     return render(request, 'blog/home.html', context)
 
-def index(request):
-    return render(request, 'index.html')
+# def index(request):
+#     return render(request, 'blog/index.html', generate_preview)
+def index(request ):
+    return render(request, 'blog/index.html')
 
 
 def generate_preview(request):
@@ -153,7 +155,7 @@ def generate_preview(request):
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
     }
 
-    url = request.GET.get('link')
+    url = request.GET.get(Blog.link)
     print(url)
     req = requests.get(url, headers)
     html = BeautifulSoup(req.content, 'html.parser')

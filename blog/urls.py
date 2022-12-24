@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import tagged, generate_preview, index
+# from .views import generate_preview, index
 
 # authenticate
 
@@ -13,5 +13,7 @@ urlpatterns = [
     path('delete-posts/<slug:slug>/', views.delete_posts, name='delete'),
     path('edit-posts/<slug:slug>/', views.edit_posts, name='edit'),
     path('save-posts/', views.save_posts, name='save'),
-    path('tag/<slug:slug>/', tagged, name='tagged'),
+    # path('', index, name='preview'),
+    # path('preview/', generate_preview, name='generate'),
+    # path('tag/<slug:slug>/', tagged, name='tagged'),
 ]

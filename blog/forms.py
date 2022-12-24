@@ -1,11 +1,11 @@
 from django import forms
+
+import blog.views
 from .models import Blog, Contact, Comment
-from ckeditor.widgets import CKEditorWidget
-
-
 
 
 banned_email_list = []
+
 
 class Contact_Form(forms.Form):
     name = forms.CharField(max_length=50, label='Name', required=False)
@@ -40,13 +40,10 @@ class Contact_Form(forms.Form):
             raise forms.ValidationError("Emails don't match")
 
 
-
-
 class Blog_Form(forms.ModelForm):
-
     class Meta:
         model = Blog
-        fields = ['title', 'content', 'category_choices', 'image', 'link', 'tags']
+        fields = ['title', 'content', 'category_choices', 'image', 'link']
 
     def __init__(self, *args, **kwargs):
         super(Blog_Form, self).__init__(*args, **kwargs)
@@ -60,12 +57,19 @@ class Blog_Form(forms.ModelForm):
             raise forms.ValidationError('Content must be at least 10 characters')
         return content
 
+
+
+
 class PostQuery_Form(forms.Form):
-    CATEGORY_CHOICES = ((None, 'Please Select a Category'), ('all','ALL'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'), ('photography', 'PHOTOGRAPHY'),
-                        ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
-    search = forms.CharField(label='Search', max_length=500, widget=forms.TextInput(attrs={'placeholder':'Search for anything', 'class': 'form-control'}),
+    CATEGORY_CHOICES = (
+    (None, 'Please Select a Category'), ('all', 'ALL'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'),
+    ('photography', 'PHOTOGRAPHY'),
+    ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
+    search = forms.CharField(label='Search', max_length=500, widget=forms.TextInput(
+        attrs={'placeholder': 'Search for anything', 'class': 'form-control'}),
                              required=False)
-    search_category = forms.ChoiceField(label='', widget=forms.Select(attrs={'class': 'form-control'}), choices=CATEGORY_CHOICES, required=False)
+    search_category = forms.ChoiceField(label='', widget=forms.Select(attrs={'class': 'form-control'}),
+                                        choices=CATEGORY_CHOICES, required=False)
 
 
 class Comment_Form(forms.ModelForm):
@@ -77,5 +81,3 @@ class Comment_Form(forms.ModelForm):
         super(Comment_Form, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {'class': 'form-control'}
-
-
