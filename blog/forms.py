@@ -1,7 +1,7 @@
 from django import forms
 from .models import Blog, Contact, Comment
-from django.forms.forms import BaseForm
-from django.forms.models import ModelForm
+from ckeditor.widgets import CKEditorWidget
+
 
 
 
@@ -43,6 +43,7 @@ class Contact_Form(forms.Form):
 
 
 class Blog_Form(forms.ModelForm):
+
     class Meta:
         model = Blog
         fields = ['title', 'content', 'category_choices', 'image', 'link', 'tags']
@@ -51,8 +52,13 @@ class Blog_Form(forms.ModelForm):
         super(Blog_Form, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {'class': 'form-control'}
-        self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
+        # self.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control'})
 
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if len(content) < 10:
+            raise forms.ValidationError('Content must be at least 10 characters')
+        return content
 
 class PostQuery_Form(forms.Form):
     CATEGORY_CHOICES = ((None, 'Please Select a Category'), ('all','ALL'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'), ('photography', 'PHOTOGRAPHY'),

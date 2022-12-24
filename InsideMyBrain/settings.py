@@ -33,7 +33,8 @@ DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = []
 
-# Application definition
+# # Application definition
+# FORM_RENDERER = 'django.forms.renderers.DjangoTemplates'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
     'login',
     'blog',
     'profile',
-    'taggit',
+    'ckeditor',
 
 ]
 
@@ -138,10 +139,11 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
+CKEDITOR_JQUERY_URL = os.path.join(STATIC_URL, 'js/jquery-3.5.1.min.js')
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Custom',
+        'toolbar': 'Full',
         'toolbar_Custom': [
             ['Bold', 'Italic', 'Underline'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],

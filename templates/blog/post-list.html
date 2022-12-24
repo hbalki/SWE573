@@ -40,11 +40,40 @@
 				        <br>
 			        {% endif %}
 
-			        <p style="font-size: large; margin-top: 20px;">{{ post.content|linebreaks|truncatewords:20 }}</p>
-			        <p style="font-size: large; margin-top: 20px;">{{ post.link}}</p>
+			        <p style="font-size: large; margin-top: 20px;">{{ post.content|safe|truncatewords:20}}</p>
+{#			        <p style="font-size: large; margin-top: 20px;">{{ post.link}} </p>#}
+
+
 		        {% empty %}
 		            <p>No Blog</p>
 		        {% endfor %}
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="col-lg-8 col-lg-offset-2">
+						{% if posts.has_other_pages %}
+							<ul class="pagination">
+								{% if posts.has_previous %}
+									<li><a href="?page={{ posts.previous_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo;</a></li>
+								{% else %}
+									<li class="disabled"><span>&laquo;</span></li>
+								{% endif %}
+								{% for i in posts.paginator.page_range %}
+									{% if posts.number == i %}
+										<li class="active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
+									{% else %}
+										<li><a href="?page={{ i }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ i }}</a></li>
+									{% endif %}
+								{% endfor %}
+								{% if posts.has_next %}
+									<li><a href="?page={{ posts.next_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&raquo;</a></li>
+								{% else %}
+									<li class="disabled"><span>&raquo;</span></li>
+								{% endif %}
+							</ul>
+						{% endif %}
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

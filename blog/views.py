@@ -1,5 +1,4 @@
 from django.core.checks import messages
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, reverse
 from blog.forms import Contact_Form, Blog_Form, PostQuery_Form, Comment_Form
 from .models import Blog
 import requests
@@ -9,6 +8,8 @@ from django.db.models import Q
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect, get_object_or_404, reverse
 from django.http import HttpResponseBadRequest
 from taggit.models import Tag
+from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.defaultfilters import slugify
 
 
@@ -36,6 +37,7 @@ def contact(request):
 
 def list_posts(request):
     posts = Blog.objects.all()
+    page = request.GET.get('page', 1)
     form = PostQuery_Form(data=request.GET or None)
     if form.is_valid():
         search_category = form.cleaned_data.get('search_category', None)
@@ -43,24 +45,30 @@ def list_posts(request):
         if search:
             posts = posts.filter(Q(content__icontains=search) | Q(title__icontains=search)).distinct()
         if search_category and search_category != 'all':
-            posts = posts.filter(category_choices__icontains=search_category)
+            posts = posts.filter(category_choices=search_category)
+
+    paginator = Paginator(posts, 3)
+    try:
+        posts = paginator.page(page)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
 
     context = {'posts': posts, 'form': form}
     return render(request, 'blog/post-list.html', context)
 
 
-def detail_posts(request, pk):
+def detail_posts(request, slug):
     form = Comment_Form()
-    blog = get_object_or_404(Blog, pk=pk)
+    blog = get_object_or_404(Blog, slug=slug)
     return render(request, 'blog/post-detail.html', context={'blog': blog, 'form': form})
 
 
-def add_comment(request, pk):
+def add_comment(request, slug):
     if request.method == 'GET':
         return HttpResponseBadRequest()
-    blog = get_object_or_404(Blog, pk=pk)
-    print(blog, "selam")
-    # print(request.POST)
+    blog = get_object_or_404(Blog, slug=slug)
     form = Comment_Form(data=request.POST)
     if form.is_valid():
         new_comment = form.save(commit=False)
@@ -76,22 +84,27 @@ def create_posts(request):
         form = Blog_Form(request.POST, files=request.FILES)
         if form.is_valid():
             blog = form.save()
-            # url = reverse('detail', kwargs={'pk': blog.pk})
+            msg = "Tebrikler <strong>{}</strong> başlıklı gönderiniz başarıyla oluşturuldu.".format(blog.title)
+            messages.success(request, msg, extra_tags='success')
             return HttpResponseRedirect(blog.get_absolute_url())
     return render(request, 'blog/post-create.html', context={'form': form})
 
 
-def delete_posts(request, pk):
-    blog = get_object_or_404(Blog, pk=pk)
+def delete_posts(request, slug):
+    blog = get_object_or_404(Blog, slug=slug)
     blog.delete()
+    msg = "<strong>{}</strong> başlıklı gönderiniz silinmiştir.".format(blog.title)
+    messages.success(request, msg, extra_tags='warning')
     return HttpResponseRedirect(reverse('list'))
 
 
-def edit_posts(request, pk):
-    blog = get_object_or_404(Blog, pk=pk)
+def edit_posts(request, slug):
+    blog = get_object_or_404(Blog, slug=slug)
     form = Blog_Form(instance=blog, data=request.POST or None, files=request.FILES or None)
     if form.is_valid():
         form.save()
+        msg = "<strong>{}</strong> başlıklı gönderiniz güncellenmiştir.".format(blog.title)
+        messages.success(request, msg, extra_tags='info')
         return HttpResponseRedirect(blog.get_absolute_url())
     context = {'form': form, 'blog': blog}
     return render(request, 'blog/post-edit.html', context=context)
@@ -102,8 +115,33 @@ def save_posts(request):
     return render(request, "blog/post-save.html", context={'context5': var5})
 
 
+def home_view(request):
+    common_tags = Blog.tags.most_common()[:4]
+    form = Blog_Form(request.POST)
+    if form.is_valid():
+        newpost = form.save(commit=False)
+        newpost.save()
+        form.save_m2m()
+    context = {
+        'common_tags': common_tags,
+        'form': form,
+    }
+    return render(request, 'blog/home.html', context)
+
+
+def tagged(request, slug):
+    tag = get_object_or_404(Tag, slug=slug)
+    common_tags = Blog.tags.most_common()[:4]
+    posts = Blog.objects.filter(tags=tag)
+    context = {
+        'tag': tag,
+        'common_tags': common_tags,
+        'posts': posts,
+    }
+    return render(request, 'blog/home.html', context)
+
 def index(request):
-    return render(request, 'blog/index.html')
+    return render(request, 'index.html')
 
 
 def generate_preview(request):
@@ -132,7 +170,7 @@ def generate_preview(request):
 
 def get_title(html):
     """Scrape page title."""
-    title = "title"
+    title = None
     if html.title.string:
         title = html.title.string
     elif html.find("meta", property="og:title"):
@@ -146,7 +184,7 @@ def get_title(html):
 
 def get_description(html):
     """Scrape page description."""
-    description = "description"
+    description = None
     if html.find("meta", property="description"):
         description = html.find("meta", property="description").get('content')
     elif html.find("meta", property="og:description"):
@@ -162,7 +200,7 @@ def get_description(html):
 
 def get_image(html):
     """Scrape share image."""
-    image = "image"
+    image = None
     if html.find("meta", property="image"):
         image = html.find("meta", property="image").get('content')
     elif html.find("meta", property="og:image"):
@@ -172,40 +210,3 @@ def get_image(html):
     elif html.find("img", src=True):
         image = html.find_all("img").get('src')
     return image
-
-
-def home_view(request):
-    posts = Blog.objects.all()
-    common_tags = Blog.tags.most_common()[:4]
-    form = Blog_Form(request.POST)
-    if form.is_valid():
-        newpost = form.save(commit=False)
-        newpost.slug = slugify(newpost.title)
-        newpost.save()
-        form.save_m2m()
-    context = {
-        'posts': posts,
-        'common_tags': common_tags,
-        'form': form,
-    }
-    return render(request, 'home.html', context)
-
-
-def detail_view(request, slug):
-    post = get_object_or_404(Blog, slug=slug)
-    context = {
-        'post': post,
-    }
-    return render(request, 'detail.html', context)
-
-
-def tagged(request, slug):
-    tag = get_object_or_404(Tag, slug=slug)
-    common_tags = Blog.tags.most_common()[:4]
-    posts = Blog.objects.filter(tags=tag)
-    context = {
-        'tag': tag,
-        'common_tags': common_tags,
-        'posts': posts,
-    }
-    return render(request, 'home.html', context)

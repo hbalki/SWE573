@@ -1,11 +1,12 @@
 from django.db import models
 from django.shortcuts import reverse
-from django.template.defaultfilters import safe, slugify
-import django
-from django.utils.encoding import force_str
-django.utils.encoding.force_text = force_str
+from django.template.defaultfilters import safe
 from taggit.managers import TaggableManager
-from django.utils.timezone import timezone
+from unidecode import unidecode
+from django.template.defaultfilters import slugify
+from ckeditor.fields import RichTextField
+
+
 
 class Contact(models.Model):
     objects = None
@@ -22,10 +23,7 @@ class Contact(models.Model):
         return "%s" % self.title
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'pk': self.pk})
-
-
-
+        return reverse('detail', kwargs={'slug': self.slug})
 
 
 class Blog(models.Model):
@@ -33,12 +31,11 @@ class Blog(models.Model):
     title = models.CharField(max_length=100, blank=False, null=True, verbose_name='Title', help_text='Title of the blog')
     category_choices = models.CharField(max_length=20, choices=CATEGORY_CHOICES, null= True, blank= False, verbose_name='Select a Category', help_text='Select a category for your blog')
     link = models.URLField(max_length=1000, blank=True, null=True, verbose_name='link', help_text='Link of the blog')
-    content = models.CharField(max_length=1000, blank=False, null=True, verbose_name='Description', help_text='Description of the blog')
+    content = RichTextField(max_length=5000, blank=False, null=True, verbose_name='Description')
     image = models.ImageField(default='default/default_img.jpg', blank=True, null=True, verbose_name='Load an image', help_text='Load an image for your blog')
     created_date = models.DateField(auto_now_add=True, auto_now=False)
     tags = TaggableManager()
-    slug = models.SlugField(max_length=100, unique=True)
-    # new_field_2 = models.ForeignKey('blog.Blog', on_delete=models.CASCADE, null=True, blank=True, related_name='new_field')
+    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
 
     class Meta:
         verbose_name_plural = 'Posts'
@@ -55,15 +52,37 @@ class Blog(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'pk': self.pk})     
+        return reverse('detail', kwargs={'slug': self.slug})
+
+    def get_unique_slug(self):
+        num = 1
+        slug = slugify(unidecode(self.title))
+        new_slug = slug
+
+        while Blog.objects.filter(slug=new_slug).exists():
+            num += 1
+            new_slug = "{}-{}".format(slug, num)
+        slug = new_slug
+        return slug
+
+    def save(self, *args, **kwargs):
+        if self.id is None:
+            self.slug = self.get_unique_slug()
+
+        else:
+            blog = Blog.objects.get(slug=self.slug)
+            if blog.title != self.title:
+                self.slug = self.get_unique_slug()
+        super(Blog, self).save(*args, **kwargs)
+
 
     def get_image(self):
 
         if self.image:
             return self.image.url
-        #
-        # elif self.get_image(html):
-        #     return self.get_image(html)
+
+        # elif get_image():
+        #     return get_image()
 
         else:
             return '/media/default/default_img.jpg'
@@ -92,6 +111,7 @@ class Blog(models.Model):
 
     def get_blog_comment(self):
         return self.comment.all()
+
 
 class Comment(models.Model):
     blog = models.ForeignKey(Blog, null=True, related_name='comment', on_delete=models.CASCADE)
