@@ -9,7 +9,7 @@ SWE573_Term_Project/LinkMe/.env
 .env
 .env.aws
 data/
-
+.idea
 
 migrations/
 !__init__.py
