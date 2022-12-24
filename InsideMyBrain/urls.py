@@ -22,11 +22,9 @@ from blog.views import contact
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('users/', include('login.urls'), name='users'),
-    path('posts/', include('blog.urls'), name='posts'),
+    path('', include('blog.urls'), name='posts'),
     path('profile/', include('profile.urls'), name='profile'),
     path('contact/', contact, name='contact'),
-    path('login/', include('login.urls'), name='login')
 
 ]
 

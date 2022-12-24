@@ -1,20 +1,24 @@
-version: "3.3"
-
+version: "3.8"
 services:
-  db:
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 'secret'
-      MYSQL_DATABASE: 'django'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'secret'
-    ports:
-      - "3307:3306"
+  app:
+    build: .  # build from Dockerfile in current directory
     volumes:
-      - db_data:/var/lib/mysql
-    expose:
-      # Opens port 3306 on the container
-      - '3306'
-
-volumes:
-  db_data:
+      - ./:/app  #
+    restart: always
+    ports:
+      - "8000:8000"  # map port 8000 on host to port 8000 in container
+    image: app:latest  # tag the image as app:latest
+    container_name: swe573_term_project  # name the container as swe573_term_project
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db  # start the db container before starting the app container
+  db:
+    image: mysql:latest  # use the latest postgres image
+    volumes:
+      - ./data/mysql/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: 'swe_573'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+    container_name: mysql_db
