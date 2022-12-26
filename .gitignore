@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 
 data
-SWE573_Term_Project/LinkMe/.env
 *.pem
 .env
 .env.aws

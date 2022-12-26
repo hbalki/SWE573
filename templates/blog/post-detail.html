@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Post List
+	Post List
 {% endblock %}
 
 {% block top_content %}
@@ -14,9 +14,12 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="col-lg-8 col-lg-offset-2">
-				<h2 class="page-header"><a href="{% url 'list' %}"><span class="glyphicon glyphicon-circle-arrow-left"></span> </a><a href="#"> {{ blog.title|upper }}</a>
-				{{ blog.get_category_choices_html}}
-					<small class="pull-right"><span class="glyphicon glyphicon-time"></span> {{ blog.created_date }} </small>
+				<h2 class="page-header"><a href="{% url 'list' %}">
+					<span class="glyphicon glyphicon-circle-arrow-left"></span> </a><a
+						href="#"> {{ blog.title|upper }}</a>
+					<span style="font-size: 20px;">{{ blog.get_category_choices_html}}</span>
+					<small class="pull-right"><span class="glyphicon glyphicon-time"></span> {{ blog.created_date }}
+					</small>
 				</h2>
 
 				{% if blog.get_image %}
@@ -28,8 +31,10 @@
 				{% endif %}
 
 				<div class="row">
-					<br>
-					<p class="lead">{{ blog.content|safe }}</p>
+					<div class="col-lg-12">
+						<p class="lead">{{ blog.content|safe|linebreaksbr }}</p>
+						<p class="lead">{{ blog.category_choices.all|join:", " }}</p>
+					</div>
 				</div>
 
 				<div class="row">

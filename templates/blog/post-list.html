@@ -2,80 +2,82 @@
 {% load static %}
 
 {% block title %}
-    Post List
+	Post List
 {% endblock %}
 
 {% block top_content %}
 
 {% endblock %}
 
-
 {% block content %}
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="col-lg-8 col-lg-offset-2">
-				<div class="row">
-					<div class="col-lg-12">
-						<form class="form-inline" action="{% url 'list' %}">
-							{% for field in form %}
-								<div class="form-group">
-									{{ field }}
-									{% for error in field.errors %}
-										<span class="text-danger"><b>{{ error }}</b></span>
-									{% endfor %}
-								</div>
-							{% endfor %}
-							<input class="btn btn-success" value="Filter" type="submit">
-						</form>
-					</div>
-				</div>
-		        {% for post in posts %}
-			        <h2><a href="{{ post.get_absolute_url }}"><span> {{ post.title }}</span></a>
-						<small>{{ post.get_category_choices_html }}</small>
-				        <small style="font-size: small"><span class="glyphicon glyphicon-time"></span>{{ post.created_date }}</small>
-
-			        </h2>
-			        {% if post.get_image %}
-			            <img class="img-responsive" src="{{ post.get_image }}">
-				        <br>
-			        {% endif %}
-
-			        <p style="font-size: large; margin-top: 20px;">{{ post.content|safe|truncatewords:20}}</p>
-{#			        <p style="font-size: large; margin-top: 20px;">{{ post.link}} </p>#}
-
-
-		        {% empty %}
-		            <p>No Blog</p>
-		        {% endfor %}
-			</div>
+			<div class="col-lg-8 col-lg-offset-2"></div>
 			<div class="row">
 				<div class="col-lg-12">
-					<div class="col-lg-8 col-lg-offset-2">
-						{% if posts.has_other_pages %}
-							<ul class="pagination">
-								{% if posts.has_previous %}
-									<li><a href="?page={{ posts.previous_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo;</a></li>
-								{% else %}
-									<li class="disabled"><span>&laquo;</span></li>
-								{% endif %}
-								{% for i in posts.paginator.page_range %}
-									{% if posts.number == i %}
-										<li class="active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
-									{% else %}
-										<li><a href="?page={{ i }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ i }}</a></li>
-									{% endif %}
+					<form class="form-inline" action="{% url 'list' %}">
+						{% for field in form %}
+							<div class="form-group">
+								<div class="col-lg-4">
+									{{ field }}
+								</div>
+								{% for error in field.errors %}
+									<span class="text-danger"><b>{{ error }}</b></span>
 								{% endfor %}
-								{% if posts.has_next %}
-									<li><a href="?page={{ posts.next_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&raquo;</a></li>
+							</div>
+						{% endfor %}
+						<input class="btn btn-success" value="Filter" type="submit">
+					</form>
+				</div>
+			</div>
+			{% for post in posts.objects_list %}
+				<h2><a href="{{ post.get_absolute_url }}"><span> {{ post.title }}</span></a>
+					<small style="font-size: small">{{ post.get_category_choices_html }}<span
+							class="glyphicon glyphicon-time"></span>{{ post.created_date }}</small>
+				</h2>
+
+				{% if post.get_image %}
+					<img class="img-responsive" src="{{ post.get_image }}" alt="">
+					<br>
+				{% endif %}
+
+				<p style="font-size: large; margin-top: 20px;">{{ post.content|safe|truncatewords:20 }}</p>
+				{#			        <p style="font-size: large; margin-top: 20px;">{{ post.link}} </p>#}
+			{% empty %}
+				<p>No Blog</p>
+			{% endfor %}
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="col-lg-8 col-lg-offset-2">
+					{% if posts.has_other_pages %}
+						<ul class="pagination">
+							{% if posts.has_previous %}
+								<li><a href="?page={{ posts.previous_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo;</a>
+								</li>
+							{% else %}
+								<li class="disabled"><span>&laquo</span></li>
+							{% endif %}
+							{% for i in posts.paginator.page_range %}
+								{% if posts.number == i %}
+									<li class="active"><span>{{ i }}<span class="sr-only">(current)</span></span>
+									</li>
 								{% else %}
-									<li class="disabled"><span>&raquo;</span></li>
+									<li><a href="?page={{ i }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ i }}</a>
+									</li>
 								{% endif %}
-							</ul>
-						{% endif %}
-					</div>
+							{% endfor %}
+							{% if posts.has_next %}
+								<li><a href="?page={{ posts.next_page_number }}{% if request.GET.search_category %}&search_category={{ request.GET.search_category }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&raquo;</a>
+								</li>
+							{% else %}
+								<li class="disabled"><span>&raquo;</span></li>
+							{% endif %}
+						</ul>
+					{% endif %}
 				</div>
 			</div>
 		</div>
 	</div>
+	</div>
 {% endblock %}
-

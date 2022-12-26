@@ -10,7 +10,8 @@ services:
     image: app:latest  # tag the image as app:latest
     container_name: swe573_term_project  # name the container as swe573_term_project
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db  # start the db container before starting the app container
