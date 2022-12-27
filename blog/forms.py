@@ -3,10 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Blog, Contact, Comment
 
-
 banned_email_list = []
-
-
 
 
 class NewUserForm(UserCreationForm):
@@ -75,13 +72,12 @@ class Blog_Form(forms.ModelForm):
         return content
 
 
-
-
 class PostQuery_Form(forms.Form):
     CATEGORY_CHOICES = (
-    (None, 'Please Select a Category'), ('all', 'ALL'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'),
-    ('photography', 'PHOTOGRAPHY'),
-    ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
+        (None, 'Please Select a Category'), ('all', 'ALL'), ('art', 'ART'), ('science', 'SCIENCE'),
+        ('sports', 'SPORTS'),
+        ('photography', 'PHOTOGRAPHY'),
+        ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'), ('other', 'OTHER'))
     search = forms.CharField(label='Search', max_length=500, widget=forms.TextInput(
         attrs={'placeholder': 'Search for anything', 'class': 'form-control'}),
                              required=False)

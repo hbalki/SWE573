@@ -36,6 +36,8 @@ class Contact(models.Model):
 
 
 class Blog(models.Model):
+    id = models.AutoField(primary_key=True)
+
     CATEGORY_CHOICES = ((None, 'Please select an option'), ('art', 'ART'), ('science', 'SCIENCE'), ('sports', 'SPORTS'),
                         ('photography', 'PHOTOGRAPHY'), ('technology', 'TECHNOLOGY'), ('travel', 'TRAVEL'),
                         ('other', 'OTHER'))
@@ -45,11 +47,13 @@ class Blog(models.Model):
                                         verbose_name='Select a Category', help_text='Select a category for your blog')
     link = models.URLField(max_length=1000, blank=True, null=True, verbose_name='link', help_text='Link of the blog')
     content = RichTextField(max_length=5000, blank=False, null=True, verbose_name='Description')
+    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
     image = models.ImageField(default='default/default_img.jpg', blank=True, null=True, verbose_name='Load an image',
                               help_text='Load an image for your blog')
     created_date = models.DateField(auto_now_add=True, auto_now=False)
+
     # tags = TaggableManager()
-    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
+
 
     class Meta:
         verbose_name_plural = 'Posts'
@@ -80,7 +84,7 @@ class Blog(models.Model):
             self.slug = self.get_unique_slug()
 
         else:
-            blog = Blog.objects.get(slug=self.slug)
+            blog = Blog.objects.filter(slug=self.slug).first()
             if blog.title != self.title:
                 self.slug = self.get_unique_slug()
         super(Blog, self).save(*args, **kwargs)
@@ -129,8 +133,8 @@ class Comment(models.Model):
     name = models.CharField(max_length=80)
     surname = models.CharField(max_length=80)
     email = models.EmailField()
-    content = models.TextField(max_length=1000, help_text='Yorumunuzu buraya giriniz')
-    created_on = models.DateTimeField(auto_now_add=True)
+    content = RichTextField(max_length=1000, help_text='Yorumunuzu buraya giriniz')
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
     active = models.BooleanField(default=False)
 
     class Meta:

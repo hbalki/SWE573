@@ -14,7 +14,7 @@ import os
 from decouple import config
 
 from pathlib import Path
-
+# import mysql.connector
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
@@ -31,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 # # Application definition
 # FORM_RENDERER = 'django.forms.renderers.DjangoTemplates'
@@ -90,19 +90,19 @@ DATABASES = {
         'PORT': '3306',
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        # 'OPTIONS': {
-        #     'auth_plugin': 'mysql_native_password'
-        # }
+        'OPTIONS': {
+            'auth_plugin': 'mysql_native_password'
+        }
     }
 
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'swe_573',
-#         'HOST': 'db',
-#         'PORT': '3306',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'swe_573',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    # }
  }
 
 # Password validation
@@ -164,4 +164,4 @@ CKEDITOR_CONFIGS = {
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
