@@ -34,7 +34,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
 
 # # Application definition
-# FORM_RENDERER = 'django.forms.renderers.DjangoTemplates'
+FORM_RENDERER = 'django.forms.renderers.DjangoTemplates'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -97,11 +97,11 @@ DATABASES = {
 
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'swe_573',
+    #     'NAME': 'mysql',
     #     'HOST': 'localhost',
     #     'PORT': '3306',
     #     'USER': 'root',
-    #     'PASSWORD': '',
+    #     'PASSWORD': 'Ayazisil-2533',
     # }
  }
 

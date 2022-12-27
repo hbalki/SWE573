@@ -7,8 +7,6 @@ from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 
 
-
-
 class Contact(models.Model):
     objects = None
     name = models.CharField(max_length=50, blank=False, null=True, verbose_name='İsim Giriniz',
@@ -69,13 +67,12 @@ class Blog(models.Model):
         return reverse('detail', kwargs={'slug': self.slug})
 
     def get_unique_slug(self):
-        num = 1
+        num = 0
         slug = slugify(unidecode(self.title))
         new_slug = slug
-
         while Blog.objects.filter(slug=new_slug).exists():
             num += 1
-            new_slug = "{}-{}".format(slug, num)
+            new_slug = "%s-%s" % (slug, num)
         slug = new_slug
         return slug
 

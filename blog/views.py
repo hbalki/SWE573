@@ -88,7 +88,7 @@ def create_posts(request):
         form = Blog_Form(request.POST, files=request.FILES)
         if form.is_valid():
             blog = form.save()
-            msg = "Tebrikler <strong>{}</strong> başlıklı gönderiniz başarıyla oluşturuldu.".format(blog.title)
+            msg = "Tebrikler <strong> %s </strong> başlıklı gönderiniz başarıyla oluşturuldu." % blog.title
             messages.success(request, msg, extra_tags='success')
             return HttpResponseRedirect(blog.get_absolute_url())
     return render(request, 'blog/post-create.html', context={'form': form})
