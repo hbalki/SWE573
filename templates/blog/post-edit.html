@@ -13,7 +13,7 @@
 	<div class="row">
 		<div class="col-lg-6 col-lg-offset-3">
 			<h1 class="page-header">Update this Post</h1>
-			<form action="{% url 'edit' blog.slug %}" enctype="multipart/form-data" method="post"> {# form.instance.slug #}
+			<form action="{% url 'edit' form.instance.slug %}" enctype="multipart/form-data" method="post"> {# form.instance.slug #}
 				{% csrf_token %}
 				{% include 'blog/include/form-include.html' %}
 				<div class="form-group">
